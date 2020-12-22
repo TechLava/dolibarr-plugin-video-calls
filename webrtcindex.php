@@ -90,7 +90,7 @@ if (isset($user->socid) && $user->socid > 0)
 			echo json_encode($users);
 		?>;
 	</script>
-	<script type="text/javascript" src="assets/app.js"></script>
+	<script type="text/javascript" src="assets/logic.js"></script>
 
 	<style type="text/css">
 		.nobody {
@@ -190,6 +190,13 @@ if (isset($user->socid) && $user->socid > 0)
 	</script>
 
 	<div class="p-3">
+		<div class="fixed-top bgh text-center text-white p-0 d-flex align-items-center justify-content-center p-4">
+			<div class="">
+				<span class="font-weight-light">Video Call Id:</span><br/>
+				<b id="video-id" title="Copy to clipboard" onclick="copyToClipboard(this.innerText.trim());"></b>
+			</div>
+		</div>
+
 		<div class="position-lg-fixed video-container bg-transparent mw-100 mb-4" style="z-index: 100; overflow-x: auto; top: 20px; right: 20px; bottom: 50px;">
 			<div id="remote-video" class="row flex-nowrap flex-lg-wrap justify-content-lg-end align-items-lg-end h-100">
 				<div class="nobody col text-center d-flex align-items-center justify-content-center text-dark mx-auto" style="max-width: 300px; height: 150px">
@@ -345,6 +352,11 @@ if (isset($user->socid) && $user->socid > 0)
 
 		#unread-counter:empty {
 			display: none !important;
+		}
+
+		.bgh {
+			background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0));
+			z-index: 100;
 		}
 	</style>
 

@@ -53,6 +53,60 @@ $(document).ready(()=>{
 	};
 
 	updateTime();
+
+	window.copyToClipboard = (function initClipboardText() {
+	  const textarea = document.createElement('textarea');
+
+	  // Move it off-screen.
+	  textarea.style.cssText = 'position: absolute; left: -99999em';
+
+	  // Set to readonly to prevent mobile devices opening a keyboard when
+	  // text is .select()'ed.
+	  textarea.setAttribute('readonly', true);
+
+	  document.body.appendChild(textarea);
+
+	  return function setClipboardText(text) {
+	    textarea.value = text;
+
+	    // Check if there is any content selected previously.
+	    const selected = document.getSelection().rangeCount > 0 ?
+	      document.getSelection().getRangeAt(0) : false;
+
+	    // iOS Safari blocks programmatic execCommand copying normally, without this hack.
+	    // https://stackoverflow.com/questions/34045777/copy-to-clipboard-using-javascript-in-ios
+	    if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+	      const editable = textarea.contentEditable;
+	      textarea.contentEditable = true;
+	      const range = document.createRange();
+	      range.selectNodeContents(textarea);
+	      const sel = window.getSelection();
+	      sel.removeAllRanges();
+	      sel.addRange(range);
+	      textarea.setSelectionRange(0, 999999);
+	      textarea.contentEditable = editable;
+	    }
+	    else {
+	      textarea.select();
+	    }
+
+	    try {
+	      const result = document.execCommand('copy');
+
+	      // Restore previous selection.
+	      if (selected) {
+	        document.getSelection().removeAllRanges();
+	        document.getSelection().addRange(selected);
+	      }
+
+	      return result;
+	    }
+	    catch (err) {
+	      console.error(err);
+	      return false;
+	    }
+	  }
+	})();
 });
 
 var handleData = function(data){
@@ -97,8 +151,9 @@ var createCall = function(button, joinCallId){
 			    button.nextElementSibling.classList.toggle('d-none');
 			    $('#create_call').modal('hide');
 			    $('#join_call').modal('hide');
+			    $('#video-id')[0].innerHTML = (joinCallId ? joinCallId : USER);
 
-			    window.isHost = true;
+			    window.isHost = joinCallId ? false : true;
             });
 
 			room.on("stream", handleStream);
@@ -133,6 +188,10 @@ var createCall = function(button, joinCallId){
             room.on('data', handleData);
         })
         .catch(err => {
+        	button.classList.toggle('d-none');
+		    button.nextElementSibling.classList.toggle('d-none');
+
+		    localStream.getTracks().forEach(track => track.stop());
             console.log('An error ocurred: '+err);
         });
 };
