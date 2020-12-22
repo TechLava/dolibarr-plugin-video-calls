@@ -328,6 +328,6 @@ window.addEventListener('beforeunload', function (e) {
   e.returnValue = '';
 });
 
-window.addEventListener('unload', function (e) {
-  console.log(e);
+window.addEventListener('unload', function(event) {
+	peer.destroy();
 });

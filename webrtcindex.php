@@ -74,16 +74,17 @@ if (isset($user->socid) && $user->socid > 0)
 	<script type="text/javascript" src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
 	<!--script type="text/javascript" src="assets/peerjs.min.js"></script-->
 	<script type="text/javascript">
-		const USER = '<?php echo sha1(sha1(md5(md5($user->id)))); ?>';
+		const USER = '<?php echo substr(sha1(sha1(md5(md5($conf->file->instance_unique_id . $user->id)))), 0, 15); ?>';
 
 		const USERS = <?php
+			//print_r($conf); die();
 			$res = $db->query("SELECT rowid, login FROM `llx_user` WHERE `rowid`!=$user->id ORDER BY `login` ASC");
 
 			$users = array();
 
 			if( $res && $res->num_rows>0 ){
 				while($r=$res->fetch_assoc()){
-					$users[sha1(sha1(md5(md5($r['rowid']))))] = $r['login'];
+					$users[substr(sha1(sha1(md5(md5($conf->file->instance_unique_id . $r['rowid'])))), 0, 15)] = $r['login'];
 				}
 			}
 
@@ -121,7 +122,7 @@ if (isset($user->socid) && $user->socid > 0)
 							#if( $res && $res->num_rows>0 ){
 							#	while($r=$res->fetch_assoc()){
 						?>
-	                    <option value="<?php echo sha1(sha1(md5(md5($r['rowid'])))); ?>"><?php echo $r['login']; ?></option>
+	                    <option value="<?php echo substr(sha1(sha1(md5(md5($conf->file->instance_unique_id . $r['rowid'])))), 0, 15); ?>"><?php echo $r['login']; ?></option>
 	                    <?php #}} ?>
 					</select-->
 					<p align="center">
@@ -162,7 +163,7 @@ if (isset($user->socid) && $user->socid > 0)
 							#if( $res && $res->num_rows>0 ){
 							#	while($r=$res->fetch_assoc()){
 						?>
-	                    <option value="<?php echo sha1(sha1(md5(md5($r['rowid'])))); ?>"><?php echo $r['login']; ?></option>
+	                    <option value="<?php echo substr(sha1(sha1(md5(md5($conf->file->instance_unique_id . $r['rowid'])))), 0, 15); ?>"><?php echo $r['login']; ?></option>
 	                    <?php #}} ?>
 					</select-->
 					<p align="center">
