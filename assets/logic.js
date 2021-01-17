@@ -191,7 +191,9 @@ var createCall = function(button, joinCallId){
         	button.classList.toggle('d-none');
 		    button.nextElementSibling.classList.toggle('d-none');
 
-		    localStream.getTracks().forEach(track => track.stop());
+		    if( localStream ){
+		    	localStream.getTracks().forEach(track => track.stop());
+		    }
             console.log('An error ocurred: '+err);
         });
 };
